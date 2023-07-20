@@ -4,8 +4,8 @@ ENTRY(_Reset)
 
 MEMORY
 {
-    ROM (rx) :  ORIGIN = 0xC0200000, LENGTH = 0x00100000 
-    RAM (rw) :  ORIGIN = 0xC0300000, LENGTH = 0x00100000 
+	ROM (rx) :  ORIGIN = 0xC0200040, LENGTH = 0x00100000 
+	RAM (rw) :  ORIGIN = 0xC0300000, LENGTH = 0x00100000 
 	HEAP (rw) : ORIGIN = 0xC0400000, LENGTH = 0x00100000 
 }
 
@@ -13,29 +13,29 @@ __HEAP_SIZE = LENGTH(HEAP);
 
 SECTIONS
 {
-    .text : {
-        *(.vector_table)
+	.text : {
+		*(.vector_table)
 		*(.resethandler)
 		*(.irqhandler)
 		*(.text)
-        *(.text*)
+		*(.text*)
 
 					/* Todo: check if we need the next 3 lines */
-		*(.glue_7)         /* glue arm to thumb code */
-		*(.glue_7t)        /* glue thumb to arm code */
+		*(.glue_7)		 /* glue arm to thumb code */
+		*(.glue_7t)		/* glue thumb to arm code */
 		*(.eh_frame)
 
 		KEEP (*(.init)) /* libc ctors */
 		KEEP (*(.fini)) /* libc dtors */
 
-        . = ALIGN(8);
-     } > ROM
+		. = ALIGN(8);
+	 } > ROM
 
 	/* .rodata sections (constants, strings, etc.) */
 	.rodata :
 	{
 		. = ALIGN(8);
-		*(.rodata)         
+		*(.rodata)		 
 		*(.rodata*) 
 		. = ALIGN(8);
 	} > ROM
@@ -78,29 +78,29 @@ SECTIONS
 	} > ROM
 
 
-    _text_end = .;
+	_text_end = .;
 
-    .data : AT(_text_end)
-    {
-        . = ALIGN(8);
-        _data_start = .;
-        *(.data)
-        *(.data*)
-        . = ALIGN(8);
-        _data_end = .;
-    } > RAM
+	.data : AT(_text_end)
+	{
+		. = ALIGN(8);
+		_data_start = .;
+		*(.data)
+		*(.data*)
+		. = ALIGN(8);
+		_data_end = .;
+	} > RAM
 
-    .bss : {
-        . = ALIGN(8);
-        _bss_start = .;
-        *(.bss)
-        *(.bss*)   /* required for some malloc calls */
+	.bss : {
+		. = ALIGN(8);
+		_bss_start = .;
+		*(.bss)
+		*(.bss*)   /* required for some malloc calls */
 		*(COMMON)  /* required for libc, such as __lock___atexit_recursive_mutex */
-        . = ALIGN(8);
-        _bss_end = .;
+		. = ALIGN(8);
+		_bss_end = .;
 		. = ALIGN(256);
 		_ram_aligned_end = .;
-    } > RAM
+	} > RAM
 
 	.heap (NOLOAD):
 	{
@@ -111,26 +111,26 @@ SECTIONS
 	} > HEAP
 	end = _sheap;
 
-    _user_stack_start = _ram_aligned_end; 
-    _user_stack_end = _user_stack_start + 0x10000;
+	_user_stack_start = _ram_aligned_end; 
+	_user_stack_end = _user_stack_start + 0x10000;
 
-    _svc_stack_start = _user_stack_end;
-    _svc_stack_end = _svc_stack_start + 0x1000;
+	_svc_stack_start = _user_stack_end;
+	_svc_stack_end = _svc_stack_start + 0x1000;
 
-    _irq_stack_start = _svc_stack_end;
-    _irq_stack_end = _irq_stack_start + 0x1000; 
+	_irq_stack_start = _svc_stack_end;
+	_irq_stack_end = _irq_stack_start + 0x1000; 
 
-    _fiq_stack_start = _irq_stack_end;
-    _fiq_stack_end = _fiq_stack_start + 0x1000;
+	_fiq_stack_start = _irq_stack_end;
+	_fiq_stack_end = _fiq_stack_start + 0x1000;
 
 
-  /* Remove information from the compiler libraries */
-  /DISCARD/ :
-  {
-    libc.a ( * )
-    libm.a ( * )
-    libgcc.a ( * )
-  }
+	/* Remove information from the compiler libraries */
+	/DISCARD/ :
+	{
+		libc.a ( * )
+		libm.a ( * )
+		libgcc.a ( * )
+	}
 
 	.ARM.attributes 0 : { *(.ARM.attributes) }
 }
