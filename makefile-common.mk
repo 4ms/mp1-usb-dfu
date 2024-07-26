@@ -2,7 +2,7 @@ LINKSCR ?= linkscript.ld
 BUILDDIR ?= build
 BINARYNAME ?= main
 UIMAGENAME ?= $(BUILDDIR)/a7-main.uimg
-SCRIPTDIR ?= ./
+SCRIPTDIR ?= .
 
 OBJDIR = $(BUILDDIR)/obj/obj
 LOADADDR 	?= 0xC2000040
@@ -58,6 +58,7 @@ LFLAGS = -Wl,--gc-sections \
 		 $(LINK_STDLIB) \
 		 -nostartfiles \
 		 -ffreestanding \
+		 -Wl,--no-warn-rwx-segments \
 		 $(EXTRALDFLAGS) \
 
 DEPFLAGS = -MMD -MP -MF $(OBJDIR)/$(basename $<).d
@@ -81,7 +82,7 @@ ELF 	= $(BUILDDIR)/$(BINARYNAME).elf
 HEX 	= $(BUILDDIR)/$(BINARYNAME).hex
 BIN 	= $(BUILDDIR)/$(BINARYNAME).bin
 
-all: Makefile $(ELF) $(UIMAGENAME)
+all: Makefile makefile-common.mk $(ELF) $(UIMAGENAME)
 	@:
 
 elf: $(ELF)
