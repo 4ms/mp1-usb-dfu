@@ -2,7 +2,7 @@ LINKSCR ?= linkscript.ld
 BUILDDIR ?= build
 BINARYNAME ?= main
 UIMAGENAME ?= $(BUILDDIR)/a7-main.uimg
-SCRIPTDIR ?= ./
+SCRIPTDIR ?= .
 
 OBJDIR = $(BUILDDIR)/obj/obj
 LOADADDR 	?= 0xC2000040
@@ -56,6 +56,7 @@ LFLAGS = -Wl,--gc-sections \
 		 $(LINK_STDLIB) \
 		 -nostartfiles \
 		 -ffreestanding \
+		 -Wl,--no-warn-rwx-segments \
 		 $(EXTRALDFLAGS) \
 
 DEPFLAGS = -MMD -MP -MF $(OBJDIR)/$(basename $<).d
@@ -79,12 +80,13 @@ ELF 	= $(BUILDDIR)/$(BINARYNAME).elf
 HEX 	= $(BUILDDIR)/$(BINARYNAME).hex
 BIN 	= $(BUILDDIR)/$(BINARYNAME).bin
 
-all: Makefile $(ELF) $(UIMAGENAME)
+all: Makefile makefile-common.mk $(ELF) $(UIMAGENAME)
+	@:
 
 elf: $(ELF)
 
 install:
-	@if [ "$${SD_DISK_DEVPART}" = "" ]; then echo "Please specify the disk and partition like this: make install-mp1-boot SD_DISK_DEVPART=/dev/diskXs3"; \
+	@if [ "$${SD_DISK_DEVPART}" = "" ]; then echo "Please specify the disk and partition like this: make install SD_DISK_DEVPART=/dev/diskXs3"; \
 	else \
 	echo "sudo dd if=${UIMAGENAME} of=$${SD_DISK_DEVPART}" && \
 	sudo dd if=${UIMAGENAME} of=$${SD_DISK_DEVPART};  fi
@@ -129,7 +131,7 @@ ifneq "$(MAKECMDGOALS)" "clean"
 endif
 
 .PRECIOUS: $(DEPS) $(OBJECTS) $(ELF)
-.PHONY: all clean install install-mp1-boot
+.PHONY: all clean install 
 
 .PHONY: compile_commands
 compile_commands:
