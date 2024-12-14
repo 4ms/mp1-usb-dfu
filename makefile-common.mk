@@ -32,7 +32,6 @@ CFLAGS = -g2 \
 		 $(INCLUDES) \
 		 -fdata-sections -ffunction-sections \
 		 -nostartfiles \
-		 -ffreestanding \
 		 $(EXTRACFLAGS)\
 
 CXXFLAGS = $(CFLAGS) \
@@ -40,7 +39,6 @@ CXXFLAGS = $(CFLAGS) \
 		-fno-rtti \
 		-fno-exceptions \
 		-fno-unwind-tables \
-		-ffreestanding \
 		-fno-threadsafe-statics \
 		-mno-unaligned-access \
 		-Werror=return-type \

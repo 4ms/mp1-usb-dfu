@@ -18,7 +18,7 @@ namespace
 mdrivlib::Uart<Board::ConsoleUART> uart;
 } // namespace
 
-void main() {
+int main() {
 	print("\n\nUSB DFU Loader Starting...\n");
 
 	Board::GreenLED green1;
